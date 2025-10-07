@@ -2,13 +2,19 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { slides, getNextSlide, getPrevSlide } from '@/lib/slides';
+import { quickSlides, fullSlides, getNextSlide, getPrevSlide, getSlidesByVersion } from '@/lib/slides';
 
 export default function SlideNav() {
   const pathname = usePathname();
+
+  // Determine version
+  const isQuickVersion = pathname.includes('/quick/');
+  const version = isQuickVersion ? 'quick' : 'full';
+  const slides = getSlidesByVersion(version);
+
   const currentSlide = slides.find((s) => s.path === pathname);
-  const nextSlide = getNextSlide(pathname);
-  const prevSlide = getPrevSlide(pathname);
+  const nextSlide = getNextSlide(pathname, version);
+  const prevSlide = getPrevSlide(pathname, version);
 
   return (
     <nav className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">

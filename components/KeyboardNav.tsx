@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { getNextSlide, getPrevSlide, slides } from '@/lib/slides';
+import { getNextSlide, getPrevSlide, getSlidesByVersion } from '@/lib/slides';
 
 export default function KeyboardNav() {
   const router = useRouter();
@@ -15,11 +15,16 @@ export default function KeyboardNav() {
         return;
       }
 
+      // Determine version
+      const isQuickVersion = pathname.includes('/quick/');
+      const version = isQuickVersion ? 'quick' : 'full';
+      const slides = getSlidesByVersion(version);
+
       switch (e.key) {
         case 'ArrowRight':
         case ' ': // Space
           e.preventDefault();
-          const nextSlide = getNextSlide(pathname);
+          const nextSlide = getNextSlide(pathname, version);
           if (nextSlide) {
             router.push(nextSlide.path);
           }
@@ -27,7 +32,7 @@ export default function KeyboardNav() {
 
         case 'ArrowLeft':
           e.preventDefault();
-          const prevSlide = getPrevSlide(pathname);
+          const prevSlide = getPrevSlide(pathname, version);
           if (prevSlide) {
             router.push(prevSlide.path);
           }
